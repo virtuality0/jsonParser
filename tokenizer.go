@@ -1,6 +1,9 @@
 package main
 
-import "unicode"
+import (
+	"fmt"
+	"unicode"
+)
 
 // different possible tokens
 
@@ -35,12 +38,22 @@ type Tokenizer struct {
 
 // moves your cursor to the next token
 func (t *Tokenizer) NextChar() {
+	fmt.Println("Position : ", t.pos, " char : ", string(t.ch))
 	t.pos++
 	if t.pos >= len(t.input) {
 		t.ch = 0
 	} else {
 		t.ch = t.input[t.pos]
 	}
+}
+
+func (t *Tokenizer) ReadLiteral() string {
+	start := t.pos
+	for IsLetter(t.ch) {
+		t.NextChar()
+	}
+
+	return t.input[start:t.pos]
 }
 
 // skips the whitespaces
@@ -107,6 +120,22 @@ func (t *Tokenizer) NextToken() Token {
 
 	if unicode.IsDigit(rune(t.ch)) {
 		return Token{tokenType: NUMBER, value: t.ReadNumber()}
+	}
+
+	if IsLetter(t.ch) {
+		str := t.ReadLiteral()
+
+		println(str)
+		switch str {
+		case "true":
+			return Token{tokenType: TRUE, value: "true"}
+
+		case "false":
+			return Token{tokenType: FALSE, value: "false"}
+
+		case "null":
+			return Token{tokenType: NULL, value: "null"}
+		}
 	}
 
 	t.NextChar()
