@@ -32,6 +32,7 @@ func main() {
 		tokens = append(tokens, tok)
 	}
 
+	// pass the tokens to ast
 	for _, t := range tokens {
 		println(t.tokenType, " ", t.value)
 	}
