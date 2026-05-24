@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 )
@@ -32,8 +33,17 @@ func main() {
 		tokens = append(tokens, tok)
 	}
 
-	// pass the tokens to ast
-	for _, t := range tokens {
-		println(t.tokenType, " ", t.value)
+	p := NewParser(tokens)
+	ast := p.Parse()
+
+	result := Eval(ast)
+	obj, ok := result.(map[string]any)
+
+	if !ok {
+		log.Fatal("Invalid object")
+	}
+
+	for key, _ := range obj {
+		fmt.Println("key : ", key, " value : ", obj[key])
 	}
 }

@@ -1,6 +1,8 @@
 package main
 
-import "strconv"
+import (
+	"strconv"
+)
 
 // creating an Abstract Syntax Tree
 
@@ -9,25 +11,25 @@ type Node interface {
 }
 
 type StringNode struct {
-	val string
+	Value string
 }
 
 type NumberNode struct {
-	val float64
+	Value float64
 }
 
 type BoolNode struct {
-	val bool
+	Value bool
 }
 
 type NullNode struct{}
 
 type ArrayNode struct {
-	values []Node
+	Values []Node
 }
 
 type ObjectNode struct {
-	properties map[string]Node
+	Properties map[string]Node
 }
 
 type Parser struct {
@@ -106,7 +108,7 @@ func (p *Parser) parseArray() *ArrayNode {
 
 	for {
 		value := p.parseValue()
-		arr.values = append(arr.values, value)
+		arr.Values = append(arr.Values, value)
 
 		if p.current().tokenType == COMMA {
 			p.advance()
@@ -131,7 +133,7 @@ func (p *Parser) parseObject() *ObjectNode {
 	p.advance()
 
 	obj := &ObjectNode{
-		properties: make(map[string]Node),
+		Properties: make(map[string]Node),
 	}
 
 	// empty object check
@@ -156,7 +158,7 @@ func (p *Parser) parseObject() *ObjectNode {
 		p.advance()
 
 		value := p.parseValue()
-		obj.properties[key] = value
+		obj.Properties[key] = value
 
 		if p.current().tokenType == COMMA {
 			p.advance()
@@ -164,14 +166,13 @@ func (p *Parser) parseObject() *ObjectNode {
 		}
 
 		if p.current().tokenType == CLOSE_BRACE {
+			p.advance()
 			break
 		}
 
 		panic("Expected comma or closing brace")
 	}
 
-	// comsume }
-	p.advance()
 	return obj
 }
 
@@ -204,7 +205,8 @@ func (p *Parser) parseValue() Node {
 
 func (p *Parser) Parse() Node {
 	val := p.parseValue()
-	if p.current().tokenType == EOF {
+
+	if p.current().tokenType != EOF {
 		panic("unexpected tokens after json value")
 	}
 

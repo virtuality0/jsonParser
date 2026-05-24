@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"unicode"
 )
 
@@ -38,7 +37,6 @@ type Tokenizer struct {
 
 // moves your cursor to the next token
 func (t *Tokenizer) NextChar() {
-	fmt.Println("Position : ", t.pos, " char : ", string(t.ch))
 	t.pos++
 	if t.pos >= len(t.input) {
 		t.ch = 0
@@ -112,7 +110,7 @@ func (t *Tokenizer) NextToken() Token {
 
 	case '"':
 		str := t.ReadString()
-		tok = Token{tokenType: CLOSE_BRACE, value: str}
+		tok = Token{tokenType: STRING, value: str}
 
 	default:
 		tok = Token{tokenType: EOF, value: ""}
@@ -125,7 +123,6 @@ func (t *Tokenizer) NextToken() Token {
 	if IsLetter(t.ch) {
 		str := t.ReadLiteral()
 
-		println(str)
 		switch str {
 		case "true":
 			return Token{tokenType: TRUE, value: "true"}
